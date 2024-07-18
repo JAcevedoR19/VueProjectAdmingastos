@@ -5,17 +5,20 @@
     const presupuesto = ref(0);
     const error = ref('');
 
-    const definirPresupuesto = () => {
+    const emit = defineEmits(['definir-presupuesto']);
 
-        if(presupuesto.value <= 0) {
+    const definirPresupuesto = () => {
+        if(presupuesto.value <= 0 || presupuesto.value === '') {
             error.value = 'El presupuesto debe ser mayor a 0';
 
             setTimeout(() => {
                 error.value = '';
             }, 3000);
+
+            return;
         }
 
-
+        emit('definir-presupuesto', presupuesto.value);
     }
 </script>
 
