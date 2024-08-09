@@ -2,6 +2,24 @@
     import cerrarModal from '../assets/img/cerrar.svg';
 
     const emit = defineEmits(['ocultar-modal']);
+    const props = defineProps({
+        modal: {
+            type: Boolean,
+            required: true
+        },
+        nombre: {
+            type: String,
+            required: true
+        },
+        cantidad: {
+            type: [String, Number],
+            required: true
+        },
+        categoria: {
+            type: String,
+            required: true
+        }
+    })
 </script>
 
 <template>
@@ -13,22 +31,22 @@
             >
         </div>
 
-        <div class="contenedor">
+        <div class="contenedor contenedor-formulario" :class="[modal.animar ? 'animar' : 'cerrar']">
             <form class="nuevo-gasto">
                 <legend>Añadir Gasto</legend>
                 <div class="campo">
                     <label for="nombre">Nombre del Gasto:</label>
-                    <input type="text" id="nombre" placeholder="Añade el Nombre del Gasto">
+                    <input type="text" id="nombre" placeholder="Añade el Nombre del Gasto" :value="nombre">
                 </div>
 
                 <div class="campo">
                     <label for="cantidad">Cantidad:</label>
-                    <input type="number" id="cantidad" placeholder="Añade la Cantidad del Gasto">
+                    <input type="number" id="cantidad" placeholder="Añade la Cantidad del Gasto" :value="cantidad">
                 </div>
 
                 <div class="campo">
                     <label for="categoria">Categoría:</label>
-                    <select id="categoria">
+                    <select id="categoria" :value="categoria">
                         <option value="" disabled selected>-- Selecciona --</option>
                         <option value="ahorro">Ahorro</option>
                         <option value="comida">Comida</option>
@@ -59,8 +77,8 @@
 
     .cerrar-modal {
         position: absolute;
+        top: 3rem;
         right: 3rem;
-        top: 3rem;      
     }
 
     .cerrar-modal img {
@@ -68,10 +86,34 @@
         cursor: pointer;
     }
 
+    .contenedor-formulario {
+        transition-property: all;
+        transition-duration: 300ms;
+        transition-timing-function: ease-in;
+        opacity: 0;
+    }
+
+    .contenedor-formulario.animar {
+        opacity: 1;
+    }
+
+    .contenedor-formulario.cerrar {
+        opacity: 0;
+    }
+
     .nuevo-gasto {
         margin: 10rem auto 0 auto;
         display: grid;
         gap: 2rem;
+    }
+
+    .nuevo-gasto legend {
+        text-align: center;
+        font-size: 3.2rem;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: var(--color-white);
+        text-decoration: underline var(--color-crimson) 0.5rem;
     }
 
     .campo {
@@ -82,7 +124,7 @@
     .nuevo-gasto input, .nuevo-gasto select {
         border: none;
         background-color: var(--color-light-gray);
-        padding: 1.5rem;
+        padding: 1.2rem;
         border-radius: 1rem;
         font-size: 2.2rem;
     }
@@ -103,5 +145,9 @@
         margin-top: 2rem;
         transition: background-color .3s ease;
         cursor: pointer;
+    }
+
+    .nuevo-gasto input[type="submit"]:hover {
+        background-color: var(--color-dark-blue);
     }
 </style>
