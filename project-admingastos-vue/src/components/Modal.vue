@@ -1,6 +1,6 @@
 <script setup>
     import { ref } from 'vue';
-    import Alert from './Alert.vue';
+    import Alert from './Alerta.vue';
     import cerrarModal from '../assets/img/cerrar.svg';
 
     const error = ref('');
