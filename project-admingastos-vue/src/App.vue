@@ -145,7 +145,6 @@
   };
 
   onMounted(() => {
-    // Verifica el modo oscuro guardado en el localStorage
     const savedMode = localStorage.getItem('darkMode');
     if (savedMode === 'true') {
       isDarkMode.value = true;
@@ -313,7 +312,7 @@
   .btn-modo-oscuro{
     position: absolute;
     right: 5rem;
-    top: 5rem;
+    top: 3rem;
     padding: 0.5rem;
     margin: 0;
     border: none;
@@ -328,6 +327,14 @@
     header h1 {
       font-size: 2.5rem;
       padding: 2rem 0;
+    }
+
+    .btn-modo-oscuro{
+      right: 2rem;
+      top: 2rem;
+      padding: 0.5rem;
+      margin: 0;
+      font-size: 1.5rem;
     }
   }
 
