@@ -145,4 +145,14 @@
             text-align: left;
         }
     }
+
+    @media screen and (max-width: 630px){
+
+        .contenedor-grafico {
+            left: 0;
+            right: 0;
+            margin-left: 4rem;
+            margin-right: auto;
+        }
+    }
 </style>

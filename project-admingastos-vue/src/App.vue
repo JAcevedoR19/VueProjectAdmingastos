@@ -289,4 +289,11 @@
     font-weight: 900;
   }
 
+  @media screen and (max-width: 630px){
+
+    header h1 {
+      font-size: 2.5rem;
+      padding: 2rem 0;
+    }
+  }
 </style>
