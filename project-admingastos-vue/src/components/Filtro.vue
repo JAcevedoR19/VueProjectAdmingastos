@@ -68,4 +68,17 @@
             font-weight: 900;
         }
     }
+
+    .darkmode--activated .filtros {
+        background-color: #201f1f;
+    }
+
+    .darkmode--activated .filtros label {
+        color: var(--color-light-gray);
+    }
+
+    .darkmode--activated .filtros select {
+        background-color: #302e2e;
+        color: var(--color-light-gray);
+    }
 </style>

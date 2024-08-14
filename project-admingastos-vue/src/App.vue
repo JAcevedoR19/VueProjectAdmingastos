@@ -23,7 +23,6 @@
   })
 
   const gastos = ref([]);
-
   const presupuesto = ref(0);
   const disponible = ref(0);
   const gastado = ref(0);
@@ -137,69 +136,91 @@
       presupuesto.value = 0;
     }
   }
+
+  const isDarkMode = ref(false);
+
+  const toggleDarkMode = () => {
+    isDarkMode.value = !isDarkMode.value;
+    document.body.classList.toggle('darkmode--activated', isDarkMode.value);
+  };
+
+  onMounted(() => {
+    // Verifica el modo oscuro guardado en el localStorage
+    const savedMode = localStorage.getItem('darkMode');
+    if (savedMode === 'true') {
+      isDarkMode.value = true;
+      document.body.classList.add('darkmode--activated');
+    }
+  });
+
+  watch(isDarkMode, (newMode) => {
+    localStorage.setItem('darkMode', newMode);
+  });
 </script>
 
 <template>
   <div 
     :class="{ fijar: modal.mostrar }"
   >
-    <header>
-      <h1>Planificador de Gastos</h1>
+    <div :class="{ 'darkmode--activated': isDarkMode }">
+      <header>
+        <button class="btn-modo-oscuro" @click="toggleDarkMode">{{ isDarkMode ? '☀️' : '🌓' }}</button>
+        <h1>Planificador de Gastos</h1>
 
-      <div class="contenedor-header contenedor sombra">
-        <Presupuesto 
-          v-if="presupuesto === 0"
-          @definir-presupuesto="definirPresupuesto"
+        <div class="contenedor-header contenedor sombra">
+          <Presupuesto 
+            v-if="presupuesto === 0"
+            @definir-presupuesto="definirPresupuesto"
+          />
+
+          <ControlPresupuesto 
+            v-else
+            :presupuesto="presupuesto"
+            :disponible="disponible"
+            :gastado="gastado"
+            @resetear-app="resetearApp"
+          />
+        </div>
+      </header>
+
+      <main v-if="presupuesto > 0">
+        <Filtro 
+          v-model:filtro="filtro"
         />
+        
+        <div class="listado-gastos contenedor">
+          <h2>{{ filtrarGastos.length > 0 ? 'Gastos' : 'No hay gastos' }}</h2>
 
-        <ControlPresupuesto 
-          v-else
-          :presupuesto="presupuesto"
-          :disponible="disponible"
-          :gastado="gastado"
-          @resetear-app="resetearApp"
-        />
-      </div>
-    </header>
+          <Gasto 
+            v-for="gasto in filtrarGastos"
+            :key="gasto.id"
+            :gasto="gasto"
+            @seleccionar-gasto="seleccionarGasto"
+          />
+        </div>
 
-    <main v-if="presupuesto > 0">
-      <Filtro 
-        v-model:filtro="filtro"
-      />
-      
-      <div class="listado-gastos contenedor">
-        <h2>{{ filtrarGastos.length > 0 ? 'Gastos' : 'No hay gastos' }}</h2>
+        <div class="crear-gasto">
+          <img
+            :src="iconoNuevoGasto"
+            alt="Icono Nuevo Gasto"
+            @click="mostrarModal"
+          >
+        </div>
 
-        <Gasto 
-          v-for="gasto in filtrarGastos"
-          :key="gasto.id"
-          :gasto="gasto"
-          @seleccionar-gasto="seleccionarGasto"
-        />
-      </div>
-
-      <div class="crear-gasto">
-        <img
-          :src="iconoNuevoGasto"
-          alt="Icono Nuevo Gasto"
-          @click="mostrarModal"
-        >
-      </div>
-
-      <Modal 
-          v-if="modal.mostrar"
-          @ocultar-modal="ocultarModal"
-          @guardar-gasto="guardarGasto"
-          @eliminar-gasto="eliminarGasto"
-          :modal="modal"
-          :disponible="disponible"
-          :id="gasto.id"
-          v-model:nombre="gasto.nombre"
-          v-model:cantidad="gasto.cantidad"
-          v-model:categoria="gasto.categoria"
-        />
-
-    </main>
+        <Modal 
+            v-if="modal.mostrar"
+            @ocultar-modal="ocultarModal"
+            @guardar-gasto="guardarGasto"
+            @eliminar-gasto="eliminarGasto"
+            :modal="modal"
+            :disponible="disponible"
+            :id="gasto.id"
+            v-model:nombre="gasto.nombre"
+            v-model:cantidad="gasto.cantidad"
+            v-model:categoria="gasto.categoria"
+          />
+      </main>
+    </div>
   </div>
 </template>
 
@@ -289,6 +310,19 @@
     font-weight: 900;
   }
 
+  .btn-modo-oscuro{
+    position: absolute;
+    right: 5rem;
+    top: 5rem;
+    padding: 0.5rem;
+    margin: 0;
+    border: none;
+    cursor: pointer;
+    font-size: 2.5rem;
+    border-radius: 100%;
+    background-color: var(--color-white);
+  }
+
   @media screen and (max-width: 630px){
 
     header h1 {
@@ -296,4 +330,24 @@
       padding: 2rem 0;
     }
   }
+
+  /* ------------- Modo oscuro --------------- */
+  body.darkmode--activated {
+    background-color: #302e2e;
+    color: var(--color-light-gray);
+  }
+
+  .darkmode--activated header {
+    background-color: #000000;
+  }
+
+  .darkmode--activated .contenedor-header {
+    background-color: #201f1f;
+  }
+
+  /* Estilo específico para elementos dentro del modo oscuro */
+  .darkmode--activated .listado-gastos h2 {
+    color: var(--color-light-gray);
+  }
+
 </style>

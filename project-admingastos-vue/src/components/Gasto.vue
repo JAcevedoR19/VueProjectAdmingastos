@@ -156,4 +156,13 @@
         margin-top: 1rem;
     }
 }
+
+    .darkmode--activated .gasto {
+        background-color: #201f1f;
+        color: var(--color-light-gray);
+    }
+
+    .darkmode--activated .detalles p {
+        color: var(--color-light-gray);
+    }
 </style>

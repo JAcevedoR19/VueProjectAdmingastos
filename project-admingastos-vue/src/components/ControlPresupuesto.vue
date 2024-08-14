@@ -155,4 +155,16 @@
             margin-right: auto;
         }
     }
+
+    .darkmode--activated .contenedor-presupuesto p {
+        color: var(--color-white);
+    }
+
+    .darkmode--activated .contenedor-presupuesto span {
+        color: rgb(226, 141, 14);
+    }
+
+    .darkmode--activated .porcentaje-gastado {
+        color: var(--color-white);
+    }
 </style>
