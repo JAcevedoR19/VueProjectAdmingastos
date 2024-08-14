@@ -54,4 +54,18 @@
         text-align: center;
         font-weight: 600;
     }
+
+    @media screen and (max-width: 630px){
+
+        .filtros .campo {
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .filtros label {
+            font-size: 2rem;
+            color: var(--color-dark-gray);
+            font-weight: 900;
+        }
+    }
 </style>

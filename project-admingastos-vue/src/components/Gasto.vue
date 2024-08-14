@@ -30,23 +30,23 @@
 
 <template>
     <div class="gasto sombra">
-
         <div class="contenido">
             <img 
             :src="diccionarioIconos[gasto.categoria]" 
             :alt="gasto.categoria"
             class="icono-gasto"
-
             >
 
             <div class="detalles">
                 <p class="categoria-gasto">{{ gasto.categoria }}</p>
+
                 <p 
                     class="nombre-gasto"
                     @click="$emit('seleccionar-gasto', gasto.id)"
                 >
-                {{ gasto.nombre }}
-            </p>
+                    {{ gasto.nombre }}
+                </p>
+
                 <p class="fecha-gasto">
                     Fecha: 
                     <span>
@@ -84,11 +84,10 @@
     }
 
     .categoria-gasto {
-        font-size: 1.2rem;
+        font-size: 1.3rem;
         color: var(--color-gray);
         text-transform: uppercase;
         font-weight: 900;
-
     }
 
     .nombre-gasto {
@@ -113,4 +112,51 @@
         font-weight: 900;
         margin: 0;
     }
+
+    @media screen and (max-width: 630px) {
+    .gasto {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .contenido {
+        display: flex;
+        align-items: center;
+        justify-items: flex-end;
+        gap: 1rem;
+        width: 100%;
+    }
+
+    .icono-gasto {
+        width: 4rem;
+    }
+
+    .categoria-gasto,
+    .nombre-gasto,
+    .fecha-gasto {
+        text-align: center;
+    }
+
+    .categoria-gasto {
+        font-size: 1.1rem;
+    }
+
+    .nombre-gasto {
+        font-size: 2rem;
+    }
+
+    .fecha-gasto {
+        font-size: 1.4rem;
+    }
+
+    .cantidad-gasto {
+        font-size: 2.5rem;
+        align-self: center;
+        margin-top: 1rem;
+    }
+}
+
+
+
 </style>
