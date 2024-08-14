@@ -1,6 +1,10 @@
 <script setup>
-    import imagen from '../assets/img/grafico.jpg'
-    import { formatearCantidad } from '../helpers';
+    import { computed } from 'vue';
+    import CircleProgress from 'vue3-circle-progress';
+    import "vue3-circle-progress/dist/circle-progress.css";
+    import { formatearCantidad } from '../helpers/index';
+
+    defineEmits(['reset-app']);
 
     const props = defineProps({
         presupuesto: {
@@ -10,7 +14,15 @@
         disponible: {
             type: Number,
             required: true
+        },
+        gastado: {
+            type: Number,
+            required: true
         }
+    })
+
+    const porcentajeGrafico = computed(() => {
+        return parseInt(((props.presupuesto - props.disponible) / props.presupuesto ) * 100);
     })
 
 </script>
@@ -19,11 +31,27 @@
     <div class="dos-columnas">
         <div class="contenedor-grafico">
 
-            <img :src="imagen" alt="">
+            <p class="porcentaje-gastado">{{ porcentajeGrafico }}%</p>
 
+            <CircleProgress
+                :percent="porcentajeGrafico"
+                :size="200"
+                :border-width="25"
+                :border-bg-width="25"
+                :is-gradient="true" 
+                :gradient="{
+                    angle: 150,
+                    startColor: '#00A14B',
+                    stopColor: '#E40822'
+                }"
+            />
         </div>
         <div class="contenedor-presupuesto">
-            <button class="reset-app">
+            <button
+                type="button"
+                class="reset-app"
+                @click="$emit('reset-app')"
+            >
                 Resetear Presupuesto
             </button>
             <p>
@@ -36,7 +64,7 @@
             </p>
             <p>
                 <span>Gastado:</span>
-                $0
+                {{ formatearCantidad(gastado) }}
             </p>
         </div>
         
@@ -44,6 +72,22 @@
 </template>
 
 <style scoped>
+    .contenedor-grafico {
+        position: relative;
+    }
+
+    .porcentaje-gastado {
+        position: absolute;
+        margin: auto;
+        top: calc(50% - 1.5rem);
+        left: 0;
+        right: 0;
+        text-align: center;
+        z-index: 100;
+        font-size: 2.4rem;
+        font-weight: 900;
+        color: var(--color-dark-gray);
+    }
     .dos-columnas {
         display: flex;
         flex-direction: column;
@@ -72,6 +116,7 @@
 
     .contenedor-presupuesto {
         width: 100%;
+
     }
 
     .contenedor-presupuesto p {

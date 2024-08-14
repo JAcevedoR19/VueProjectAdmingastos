@@ -1,11 +1,11 @@
 <script setup>
-    import { ref } from 'vue';
+    import { ref, computed } from 'vue';
     import Alert from './Alerta.vue';
     import cerrarModal from '../assets/img/cerrar.svg';
 
     const error = ref('');
 
-    const emit = defineEmits(['ocultar-modal', 'update:nombre', 'update:cantidad', 'update:categoria']);
+    const emit = defineEmits(['ocultar-modal', 'guardar-gasto', 'update:nombre', 'update:cantidad', 'update:categoria', 'eliminar-gasto']);
     const props = defineProps({
         modal: {
             type: Boolean,
@@ -22,19 +22,31 @@
         categoria: {
             type: String,
             required: true
+        },
+        disponible: {
+            type: Number,
+            required: true
+        },
+        id: {
+            type: [String, null],
+            required: true
         }
     })
 
-    const agregarGasto = () => {
-        const { nombre, cantidad, categoria } = props;
+    const reiniciarDisponible = props.cantidad;
 
-        if([nombre, cantidad, categoria].includes('')) {
+    const agregarGasto = () => {
+        const { nombre, cantidad, categoria, disponible, id } = props;
+
+        if([ nombre, cantidad, categoria ].includes('')) {
             error.value = 'Todos los campos son obligatorios';
             setTimeout(() => {
                 error.value = '';
             }, 3000);
             return;
         }
+
+        // Validamos la cantidad
         if (cantidad <= 0 || isNaN(cantidad)) {
             error.value = 'La cantidad debe ser mayor a 0';
             setTimeout(() => {
@@ -42,7 +54,32 @@
             }, 3000);
             return;
         }
+
+        // Validamos el saldo disponible para evitar el excedente
+        if (id) {
+            if (cantidad > reiniciarDisponible + disponible) {
+                error.value = 'La cantidad supera el saldo disponible';
+                setTimeout(() => {
+                    error.value = '';
+                }, 3000);
+                return;
+            }
+        } else {
+            if (cantidad > disponible) {
+                error.value = 'La cantidad supera el saldo disponible';
+                setTimeout(() => {
+                    error.value = '';
+                }, 3000);
+                return;
+            }
+        }
+        
+        emit('guardar-gasto');
     }
+
+    const isEditing = computed(() => {
+        return props.id
+    });
 </script>
 
 <template>
@@ -58,12 +95,15 @@
             <form class="nuevo-gasto"
                 @submit.prevent="agregarGasto"
             >
-                <legend>Añadir Gasto</legend>
+                <legend>{{ isEditing ? 'Guardar Cambios' : 'Añadir Gasto' }}</legend>
+
                 <Alert v-if="error">{{ error }}</Alert>
+
                 <div class="campo">
                     <label for="nombre">Nombre del Gasto:</label>
                     <input type="text" id="nombre" placeholder="Añade el Nombre del Gasto" 
-                        :value="nombre" @input="$emit('update:nombre', $event.target.value)"
+                        :value="nombre" 
+                        @input="$emit('update:nombre', $event.target.value)"
                     >
                 </div>
 
@@ -87,12 +127,21 @@
                         <option value="suscripciones">Suscripciones</option>
                         <option value="ocio">Ocio</option>
                         <option value="salud">Salud</option>
-                        <option value="varios">Varios</option>
+                        <option value="varios">Gastos Varios</option>
                     </select>
                 </div>
 
-                <input type="submit" value="Añadir Gasto">
+                <input type="submit" :value="[ isEditing ? 'Guardar Cambios' : 'Añadir Gasto']">
             </form>
+
+            <button 
+                type="button"
+                class="btn-eliminar"
+                v-if="isEditing"
+                @click="$emit('eliminar-gasto', id)"
+            >
+                Eliminar Gasto
+            </button>
         </div>
     </div>
 </template>
@@ -135,14 +184,14 @@
     }
 
     .nuevo-gasto {
-        margin: 10rem auto 0 auto;
+        margin: 8.5rem auto 0 auto;
         display: grid;
-        gap: 2rem;
+        gap: 1.5rem;
     }
 
     .nuevo-gasto legend {
         text-align: center;
-        font-size: 3.2rem;
+        font-size: 3rem;
         text-transform: uppercase;
         font-weight: 700;
         color: var(--color-white);
@@ -159,11 +208,11 @@
         background-color: var(--color-light-gray);
         padding: 1.2rem;
         border-radius: 1rem;
-        font-size: 2.2rem;
+        font-size: 2rem;
     }
 
     .nuevo-gasto label {
-        font-size: 3rem;
+        font-size: 2.5rem;
         text-align: center;
         color: var(--color-white);
         font-weight: 900;
@@ -182,5 +231,20 @@
 
     .nuevo-gasto input[type="submit"]:hover {
         background-color: var(--color-dark-blue);
+    }
+
+    .btn-eliminar {
+        background-color: var(--color-red);
+        text-align: center;
+        padding: 1.2rem;
+        border: none;
+        border-radius: 1rem;
+        font-weight: 700;
+        font-size: 2rem;
+        width: 100%;
+        color: var(--color-white);
+        margin-top: 2.5rem;
+        transition: background-color .3s ease;
+        cursor: pointer;
     }
 </style>
