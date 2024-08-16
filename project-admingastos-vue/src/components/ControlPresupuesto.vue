@@ -4,7 +4,7 @@
     import "vue3-circle-progress/dist/circle-progress.css";
     import { formatearCantidad } from '../helpers/index';
 
-    defineEmits(['reset-app']);
+    defineEmits(['resetear-app']);
 
     const props = defineProps({
         presupuesto: {
@@ -50,7 +50,7 @@
             <button
                 type="button"
                 class="reset-app"
-                @click="$emit('reset-app')"
+                @click="$emit('resetear-app')"
             >
                 Resetear Presupuesto
             </button>
